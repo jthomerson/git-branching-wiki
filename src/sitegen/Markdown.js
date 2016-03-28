@@ -8,12 +8,14 @@
 var _ = require('underscore'),
     marked = require('marked'),
     BasePlugin = require('./BasePlugin'),
-    MarkdownTransformer = require('./lib/MarkdownTransformer');
+    MarkdownTransformer = require('./lib/MarkdownTransformer'),
+    MarkdownRenderer = require('./lib/MarkdownRenderer');
 
 module.exports = BasePlugin.extend({
 
    onInitialized: function() {
       this.transformer = new MarkdownTransformer(this.opts.templating.markdown);
+      this.renderer = MarkdownRenderer.create(this.opts.templating.markdown);
    },
 
    run: function(files, metalsmith, done) {
@@ -26,7 +28,7 @@ module.exports = BasePlugin.extend({
             gfm: true,
             breaks: true,
             tables: true,
-            // TODO: add custom renderer
+            renderer: this.renderer.forMarked(),
             // TODO: add code highlighting
          });
 
